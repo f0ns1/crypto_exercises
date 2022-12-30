@@ -175,3 +175,43 @@ sha3_256 b'a2db3fd0f1e31f887e0f2c2dcb07009765d5a00692dbd891c4fd5d00ffd83e84'
 blake2s:  b'317f16725dcf180051229fb4eb78d8573d8eb123eded2881ae504057ddf50226'
 ripemd160:  b'd80ec4aae439459ed484dca817e6cacd9fdd63be'
 ```
+#Derivated functions for passwords
+##hmac 
+
+### hmac_sha256
+
+source code:
+```
+import hashlib, hmac, binascii
+
+def hmac_sha256(key, msg):
+    return hmac.new(key, msg, hashlib.sha256).digest()
+
+key = b'Derivation password with Hmac'
+msg = b'Secret message to protect with derivation password'
+
+hmac_hashed = hmac_sha256(key, msg)
+print("hmac example: ", binascii.hexlify(hmac_hashed))
+```
+Output
+```
+>>> (executing file "hmac_sha256.py")
+hmac example:  b'8fd3a363da9ecdafc03e769365f3a5ac2d00010e9c43ea0c51ed21bdc5fffebb'
+```
+
+### pbkdf2
+source code:
+```
+import os, binascii
+from backports.pbkdf2 import pbkdf2_hmac
+
+salt = os.urandom(64)
+passwd= b'My password to derivate and protect'
+key = pbkdf2_hmac("sha256", passwd, salt, 1000, 32)
+print("pbkdf derivated keys : ", binascii.hexlify(key))
+```
+Output:
+```
+>>> (executing file "pbkdf2_hmac.py")
+pbkdf derivated keys :  b'd3259f983131b146cf3bd764908dee0c01d55912c49620b8e3fda03061a09653'
+```
